@@ -9,3 +9,17 @@ Untie-the-Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Tr
 ## License
 
 The content of this project itself is licensed under [LICENSE](LICENSE).
+
+
+## Citation
+
+If you find this repo helpful, please cite our paper as follows:
+
+```
+@article{tian2024utk,
+  title={Untie-the-Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models},
+  author={Junfeng Tian, Da Zheng, Yang Chen, Rui Wang, Colin Zhang, Debing Zhang},
+  journal={arXiv preprint arXiv:TODO},
+  year={2024}
+}
+```
