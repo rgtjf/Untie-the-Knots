@@ -1,6 +1,4 @@
-# Untie-the-Knots
-
-Untie-the-Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models
+# Untie-the-Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models
 
 <div align="center">
     <a href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281">🤗 Hugging Face</a>
