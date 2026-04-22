@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Untie the Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training</title>
+  <meta name="description" content="Untie the Knots (UtK): A novel data augmentation strategy for long-context pre-training. ACL 2025." />
+  <meta property="og:title" content="Untie the Knots (UtK)" />
+  <meta property="og:description" content="An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models. ACL 2025." />
+  <meta property="og:image" content="assets/images/logo.png" />
+  <link rel="icon" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="lang-en">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <img src="assets/images/logo.png" alt="UtK logo" />
+      <span>UtK</span>
+    </a>
+    <div class="nav-links">
+      <a href="#method"><span class="en">Method</span><span class="zh">方法</span></a>
+      <a href="#results"><span class="en">Results</span><span class="zh">结果</span></a>
+      <a href="#analysis"><span class="en">Analysis</span><span class="zh">分析</span></a>
+      <a href="#resources"><span class="en">Resources</span><span class="zh">资源</span></a>
+      <a href="#citation"><span class="en">Cite</span><span class="zh">引用</span></a>
+    </div>
+    <div class="nav-actions">
+      <button id="lang-toggle" class="btn-ghost" aria-label="Toggle language">
+        <span class="en">中文</span><span class="zh">EN</span>
+      </button>
+      <button id="theme-toggle" class="btn-ghost" aria-label="Toggle theme" title="Toggle light/dark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header id="top" class="hero">
+  <div class="hero-inner">
+    <div class="venue-badge">
+      <span class="en">ACL 2025 · Main Conference</span>
+      <span class="zh">ACL 2025 · 主会</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="en">Untie the Knots</span>
+      <span class="zh">Untie the Knots · 解开绳结</span>
+    </h1>
+    <p class="hero-subtitle">
+      <span class="en">An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models</span>
+      <span class="zh">一种面向长上下文预训练的高效数据增强策略</span>
+    </p>
+
+    <div class="authors">
+      <a href="#">Junfeng Tian</a><sup>1,2</sup>,
+      <a href="#">Da Zheng</a><sup>1</sup>,
+      <a href="#">Yang Chen</a><sup>1</sup>,
+      <a href="#">Rui Wang</a><sup>2</sup>,
+      <a href="#">Colin Zhang</a><sup>3</sup>,
+      <a href="#">Debing Zhang</a><sup>1</sup>
+    </div>
+    <div class="affiliations">
+      <span><sup>1</sup> Xiaohongshu Inc.</span>
+      <span><sup>2</sup> East China Normal University</span>
+      <span><sup>3</sup> Decilion</span>
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://arxiv.org/pdf/2409.04774" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="en">Paper (arXiv)</span><span class="zh">论文 (arXiv)</span>
+      </a>
+      <a class="btn" href="https://github.com/rgtjf/Untie-the-Knots" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.4.5 0 5.9 0 12.5c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1.1-.8.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.3 2.9.1 3.2.8.9 1.2 2 1.2 3.3 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.8-1.6 8.2-6.1 8.2-11.4C24 5.9 18.6.5 12 .5z"/></svg>
+        <span>Code</span>
+      </a>
+      <a class="btn" href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">
+        🤗 <span class="en">Models</span><span class="zh">模型</span>
+      </a>
+      <a class="btn" href="assets/pdfs/poster.pdf" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span class="en">Poster</span><span class="zh">海报</span>
+      </a>
+      <a class="btn" href="assets/pdfs/slides.pdf" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <span class="en">Slides</span><span class="zh">幻灯片</span>
+      </a>
+    </div>
+
+    <div class="affiliation-logos">
+      <img src="assets/images/hilab.png" alt="Xiaohongshu hi lab" />
+      <img src="assets/images/ecnu.svg" alt="East China Normal University" />
+      <img src="assets/images/decilion.svg" alt="Decilion" />
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="section tldr-section">
+  <div class="container">
+    <div class="tldr-card">
+      <div class="tldr-label">TL;DR</div>
+      <p class="tldr-text">
+        <span class="en">We chunk documents, shuffle the chunks, and train LLMs to <em>untie the knots</em> — identifying relevant segments within seemingly chaotic token sequences. UtK is a data-only recipe that delivers <b>75% / 84.5%</b> RULER@128K on 7B/72B models with <b>20× better data efficiency</b> and <b>no short-context regression</b>.</span>
+        <span class="zh">我们将文档切块、打乱，然后训练 LLM 学会<em>解开绳结</em>——在看似混乱的 token 序列中识别出相关片段。UtK 是一种纯数据侧的训练策略，在 7B/72B 模型上取得了 RULER@128K <b>75% / 84.5%</b>，数据效率<b>提升 20 倍</b>，且<b>不损害短文本能力</b>。</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="abstract">
+  <div class="container narrow">
+    <h2><span class="en">Abstract</span><span class="zh">摘要</span></h2>
+    <p>
+      <span class="en">We introduce <b>Untie the Knots (UtK)</b>, a novel data augmentation strategy employed during the continue pre-training phase, designed to efficiently enable LLMs to gain long-context capabilities <b>without the need to modify the existing data mixture</b>. We chunk the documents, shuffle the chunks, and create a complex and knotted structure of long texts; LLMs are then trained to untie these knots and identify relevant segments within seemingly chaotic token sequences. This approach greatly improves the model's performance by accurately attending to relevant information in long context and the training efficiency is also largely increased. We conduct extensive experiments on models with 7B and 72B parameters, trained on 20 billion tokens, demonstrating that UtK achieves <b>75%</b> and <b>84.5%</b> accuracy on RULER at 128K context length, significantly outperforming other long context strategies.</span>
+      <span class="zh">我们提出 <b>Untie the Knots (UtK)</b>——一种在持续预训练阶段使用的新型数据增强策略，旨在<b>不修改原有数据混合比例</b>的前提下高效赋予 LLM 长上下文能力。我们把文档切分为若干区块，将来自不同文档的区块打乱并拼成一段长且"打结"的序列；模型被训练去"解开这些绳结"——在看似混乱的 token 流中准确识别出属于同一文档的相关片段。这种方法显著提升了模型在长文本中精确关注相关信息的能力，训练效率也大幅提高。我们在 7B 与 72B 模型上用 200 亿 token 做了系统实验，UtK 在 128K 长度的 RULER 上分别取得 <b>75%</b> 与 <b>84.5%</b>，显著优于其他长上下文策略。</span>
+    </p>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-value">75.0<span>%</span></div>
+        <div class="kpi-label"><span class="en">RULER @ 128K (Qwen2-7B)</span><span class="zh">RULER @ 128K (Qwen2-7B)</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">84.5<span>%</span></div>
+        <div class="kpi-label"><span class="en">RULER @ 128K (Qwen2-72B)</span><span class="zh">RULER @ 128K (Qwen2-72B)</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">20<span>×</span></div>
+        <div class="kpi-label"><span class="en">Data efficiency gain</span><span class="zh">数据效率提升</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">&lt;1.5<span>%</span></div>
+        <div class="kpi-label"><span class="en">Short-context delta</span><span class="zh">短文本性能变化</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="motivation">
+  <div class="container">
+    <h2><span class="en">Motivation: The Data Bottleneck</span><span class="zh">动机：长文本数据瓶颈</span></h2>
+    <div class="two-col">
+      <div>
+        <p>
+          <span class="en">High-quality, naturally long documents are <b>extremely rare</b>. In a typical pre-training corpus, <b>over 70% of tokens come from documents shorter than 32K</b>. Naively upsampling scarce long documents distorts the data distribution and can hurt short-context generalization.</span>
+          <span class="zh">高质量的原生长文档<b>极为稀缺</b>。在典型预训练语料中，<b>超过 70% 的 token 来自长度不足 32K 的文档</b>。直接对稀缺长文档做上采样，会扭曲训练分布，反而损害模型在更常见的短文本任务上的泛化能力。</span>
+        </p>
+        <p>
+          <span class="en">Our insight: instead of <em>finding</em> more long data, <b>teach the model the skill</b> of long-range attention using data we already have.</span>
+          <span class="zh">我们的出发点是：与其<em>寻找</em>更多长文档，不如<b>教会模型掌握</b>长距离注意力的能力——用我们已经拥有的数据。</span>
+        </p>
+      </div>
+      <div class="figure">
+        <!-- Inline SVG: Token-length distribution bar chart -->
+        <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Token length distribution">
+          <defs>
+            <linearGradient id="barGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#e97eba"/>
+              <stop offset="100%" stop-color="#b1539a"/>
+            </linearGradient>
+          </defs>
+          <text x="210" y="20" text-anchor="middle" class="svg-title">Token share by document length</text>
+          <!-- axes -->
+          <line x1="55" y1="210" x2="400" y2="210" stroke="currentColor" stroke-width="1"/>
+          <line x1="55" y1="40"  x2="55"  y2="210" stroke="currentColor" stroke-width="1"/>
+          <!-- bars: <4K 32%, 4-8K 22%, 8-16K 12%, 16-32K 6%, 32-64K 3%, >=64K 2% (illustrative)-->
+          <g>
+            <rect x="70"  y="108" width="46" height="102" fill="url(#barGrad)"/>
+            <rect x="126" y="130" width="46" height="80"  fill="url(#barGrad)"/>
+            <rect x="182" y="164" width="46" height="46"  fill="url(#barGrad)"/>
+            <rect x="238" y="188" width="46" height="22"  fill="url(#barGrad)"/>
+            <rect x="294" y="199" width="46" height="11"  fill="#888"/>
+            <rect x="350" y="203" width="46" height="7"   fill="#888"/>
+          </g>
+          <!-- labels -->
+          <g class="svg-axis" text-anchor="middle">
+            <text x="93"  y="226">&lt;4K</text>
+            <text x="149" y="226">4–8K</text>
+            <text x="205" y="226">8–16K</text>
+            <text x="261" y="226">16–32K</text>
+            <text x="317" y="226">32–64K</text>
+            <text x="373" y="226">≥64K</text>
+          </g>
+          <text x="50" y="110" text-anchor="end" class="svg-axis">30%</text>
+          <text x="50" y="160" text-anchor="end" class="svg-axis">15%</text>
+          <text x="50" y="210" text-anchor="end" class="svg-axis">0%</text>
+          <!-- highlight -->
+          <rect x="66" y="60" width="222" height="160" fill="none" stroke="#e97eba" stroke-width="2" stroke-dasharray="4 4" rx="6"/>
+          <text x="177" y="56" text-anchor="middle" class="svg-caption">≥ 70% of tokens are from &lt;32K docs</text>
+        </svg>
+        <div class="fig-caption"><span class="en">Illustrative token-share distribution in a typical pre-training corpus.</span><span class="zh">典型预训练语料中，按文档长度计算的 token 占比示意。</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="method">
+  <div class="container">
+    <h2><span class="en">Method: Tangling &amp; Untying</span><span class="zh">方法：打结与解结</span></h2>
+    <p class="section-lead">
+      <span class="en">UtK turns standard next-token prediction into a long-range retrieval task. It has two phases: a <b>Tangling Phase</b> that constructs a knotted pseudo-long sequence, and an <b>Untying Phase</b> where the model must learn to trace across distractors.</span>
+      <span class="zh">UtK 将标准的 next-token 预测改造成一个长距离信息检索任务，分为两个阶段：<b>打结阶段</b>负责构造"结"状的伪长序列，<b>解结阶段</b>训练模型穿越干扰项并还原结构。</span>
+    </p>
+
+    <div class="method-figure">
+      <!-- Inline SVG: 3-stage illustration of UtK -->
+      <svg viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Untie the Knots pipeline">
+        <defs>
+          <linearGradient id="docA" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#4f9ff8"/><stop offset="100%" stop-color="#2b6fd1"/></linearGradient>
+          <linearGradient id="docB" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#f0a950"/><stop offset="100%" stop-color="#d48223"/></linearGradient>
+          <linearGradient id="docC" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#7ed39f"/><stop offset="100%" stop-color="#4caa77"/></linearGradient>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="currentColor"/></marker>
+          <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+        </defs>
+
+        <!-- Row 1: Standard pre-training -->
+        <text x="20" y="30" class="svg-row-title">① Standard pre-training (concatenated)</text>
+        <g>
+          <rect x="20"  y="50" width="220" height="40" rx="6" fill="url(#docA)"/>
+          <text x="130" y="75" text-anchor="middle" fill="#fff" class="svg-chunk">Document A</text>
+          <rect x="250" y="50" width="220" height="40" rx="6" fill="url(#docB)"/>
+          <text x="360" y="75" text-anchor="middle" fill="#fff" class="svg-chunk">Document B</text>
+          <rect x="480" y="50" width="180" height="40" rx="6" fill="url(#docC)"/>
+          <text x="570" y="75" text-anchor="middle" fill="#fff" class="svg-chunk">Document C</text>
+        </g>
+        <text x="690" y="75" class="svg-note">→ only local dependencies</text>
+
+        <!-- Divider -->
+        <line x1="20" y1="115" x2="940" y2="115" stroke="currentColor" stroke-opacity="0.15"/>
+
+        <!-- Row 2: Tangling Phase -->
+        <text x="20" y="145" class="svg-row-title">② Tangling Phase: chunk · shuffle · insert knots &amp; IDs</text>
+
+        <!-- Chunking -->
+        <g transform="translate(20,165)">
+          <text x="0" y="0" class="svg-sublabel">Chunk</text>
+          <rect x="0"  y="10" width="60" height="30" rx="4" fill="url(#docA)"/><text x="30"  y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₁</text>
+          <rect x="65" y="10" width="60" height="30" rx="4" fill="url(#docA)"/><text x="95"  y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₂</text>
+          <rect x="130" y="10" width="60" height="30" rx="4" fill="url(#docA)"/><text x="160" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₃</text>
+
+          <rect x="210" y="10" width="60" height="30" rx="4" fill="url(#docB)"/><text x="240" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₁</text>
+          <rect x="275" y="10" width="60" height="30" rx="4" fill="url(#docB)"/><text x="305" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₂</text>
+
+          <rect x="355" y="10" width="60" height="30" rx="4" fill="url(#docC)"/><text x="385" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₁</text>
+          <rect x="420" y="10" width="60" height="30" rx="4" fill="url(#docC)"/><text x="450" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₂</text>
+        </g>
+
+        <!-- Arrow down -->
+        <line x1="480" y1="215" x2="480" y2="245" stroke="currentColor" marker-end="url(#arrow)"/>
+
+        <!-- Tangled sequence with knots -->
+        <g transform="translate(20,255)">
+          <text x="0" y="0" class="svg-sublabel">Tangled sequence</text>
+          <!-- B1 [k] A2 [k] C1 [k] B2 [k] A1 [k] C2 [k] A3 + backtrace -->
+          <g class="knot-chain">
+            <rect x="0"   y="10" width="56" height="30" rx="4" fill="url(#docB)"/><text x="28"  y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₁</text>
+            <text x="61" y="30" class="svg-knot">⟁</text>
+            <rect x="74"  y="10" width="56" height="30" rx="4" fill="url(#docA)"/><text x="102" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₂</text>
+            <text x="135" y="30" class="svg-knot">⟁</text>
+            <rect x="148" y="10" width="56" height="30" rx="4" fill="url(#docC)"/><text x="176" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₁</text>
+            <text x="209" y="30" class="svg-knot">⟁</text>
+            <rect x="222" y="10" width="56" height="30" rx="4" fill="url(#docB)"/><text x="250" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₂</text>
+            <text x="283" y="30" class="svg-knot">⟁</text>
+            <rect x="296" y="10" width="56" height="30" rx="4" fill="url(#docA)"/><text x="324" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₁</text>
+            <text x="357" y="30" class="svg-knot">⟁</text>
+            <rect x="370" y="10" width="56" height="30" rx="4" fill="url(#docC)"/><text x="398" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₂</text>
+            <text x="431" y="30" class="svg-knot">⟁</text>
+            <rect x="444" y="10" width="56" height="30" rx="4" fill="url(#docA)"/><text x="472" y="30" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₃</text>
+
+            <!-- Backtrace tag -->
+            <rect x="514" y="10" width="156" height="30" rx="4" fill="none" stroke="#e63946" stroke-dasharray="4 3"/>
+            <text x="592" y="30" text-anchor="middle" fill="#e63946" class="svg-chunk-sm">⇐ backtrace: A₁·A₂·A₃</text>
+          </g>
+        </g>
+
+        <!-- Divider -->
+        <line x1="20" y1="320" x2="940" y2="320" stroke="currentColor" stroke-opacity="0.15"/>
+
+        <!-- Row 3: Untying Phase -->
+        <text x="20" y="350" class="svg-row-title">③ Untying Phase: long-range attention across distractors</text>
+
+        <g transform="translate(20,365)">
+          <!-- Same sequence, attention arcs A1->A2->A3 -->
+          <rect x="0"   y="20" width="56" height="30" rx="4" fill="url(#docB)" opacity="0.5"/><text x="28"  y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₁</text>
+          <rect x="74"  y="20" width="56" height="30" rx="4" fill="url(#docA)"/><text x="102" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₂</text>
+          <rect x="148" y="20" width="56" height="30" rx="4" fill="url(#docC)" opacity="0.5"/><text x="176" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₁</text>
+          <rect x="222" y="20" width="56" height="30" rx="4" fill="url(#docB)" opacity="0.5"/><text x="250" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">B₂</text>
+          <rect x="296" y="20" width="56" height="30" rx="4" fill="url(#docA)"/><text x="324" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₁</text>
+          <rect x="370" y="20" width="56" height="30" rx="4" fill="url(#docC)" opacity="0.5"/><text x="398" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">C₂</text>
+          <rect x="444" y="20" width="56" height="30" rx="4" fill="url(#docA)"/><text x="472" y="40" text-anchor="middle" fill="#fff" class="svg-chunk-sm">A₃</text>
+
+          <!-- Attention arcs from A3 back to A2 and A1 (long-range) -->
+          <path d="M472,20 C400,-30 180,-30 102,20" fill="none" stroke="#e63946" stroke-width="2" marker-end="url(#arrow-red)"/>
+          <path d="M472,20 C430,-55 340,-55 324,20" fill="none" stroke="#e63946" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+          <text x="650" y="30" fill="#e63946" class="svg-note">untie: attend across distractors</text>
+          <text x="650" y="48" class="svg-note">+ predict chunk-ID sequence</text>
+        </g>
+
+        <!-- Legend -->
+        <g transform="translate(20,475)">
+          <rect x="0"  y="0" width="14" height="14" fill="url(#docA)"/><text x="20"  y="12" class="svg-legend">Doc A</text>
+          <rect x="80" y="0" width="14" height="14" fill="url(#docB)"/><text x="100" y="12" class="svg-legend">Doc B</text>
+          <rect x="160" y="0" width="14" height="14" fill="url(#docC)"/><text x="180" y="12" class="svg-legend">Doc C</text>
+          <text x="260" y="12" class="svg-knot" style="font-size:16px">⟁</text>
+          <text x="275" y="12" class="svg-legend">[Knot] token</text>
+          <text x="400" y="12" fill="#e63946" class="svg-legend">red arc = long-range attention</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <div class="method-step">1</div>
+        <h3><span class="en">Chunking</span><span class="zh">分块</span></h3>
+        <p><span class="en">Split each document into 2–3 random-length chunks. Empirically, 2–3 chunks is the sweet spot.</span><span class="zh">将每篇文档随机切为 2–3 个变长区块；2–3 块经实验是最优区间。</span></p>
+      </div>
+      <div class="method-card">
+        <div class="method-step">2</div>
+        <h3><span class="en">Tying &amp; Shuffling</span><span class="zh">编织 &amp; 打乱</span></h3>
+        <p><span class="en">Chunks from different documents are globally shuffled into one long sequence, with <code>[Knot]</code> tokens and unique <code>[Chunk ID]</code>s inserted at boundaries.</span><span class="zh">不同文档的区块全局随机打乱成一段长序列，在边界插入 <code>[Knot]</code> 标记与唯一的 <code>[Chunk ID]</code>。</span></p>
+      </div>
+      <div class="method-card">
+        <div class="method-step">3</div>
+        <h3><span class="en">Backtracing</span><span class="zh">回溯任务</span></h3>
+        <p><span class="en">At the end of a document's last chunk, the model must emit the original chunk-ID sequence — forcing explicit structure reconstruction.</span><span class="zh">在原文档最后一个区块结尾处，模型须显式输出该文档完整的区块 ID 序列——强制学习全局结构。</span></p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="en"><b>Key insight.</b> UtK transforms a standard next-token objective into a challenging long-range reasoning task. The model cannot solve it locally — it must attend across thousands of distractor tokens to succeed.</span>
+      <span class="zh"><b>核心洞察。</b>UtK 把标准的 next-token 目标升级为一个长距离推理任务。模型无法只凭局部信息解决它，必须跨越数千个干扰 token 才能预测正确。</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="results">
+  <div class="container">
+    <h2><span class="en">Results</span><span class="zh">实验结果</span></h2>
+
+    <h3><span class="en">RULER Benchmark — Base Models</span><span class="zh">RULER 基准 · 基座模型</span></h3>
+    <p>
+      <span class="en">On the RULER benchmark at 128K context length, UtK achieves <b>75.0%</b> on Qwen2-7B and <b>84.5%</b> on Qwen2-72B, significantly outperforming upsampling, synthetic-data and other long-context recipes.</span>
+      <span class="zh">在 RULER 128K 长度上，UtK 使 Qwen2-7B 达到 <b>75.0%</b>、Qwen2-72B 达到 <b>84.5%</b>，明显优于上采样、合成数据等长上下文训练策略。</span>
+    </p>
+    <div class="figure figure-compact">
+      <img src="https://github.com/user-attachments/assets/f0fb52f7-9c4d-45fc-95f7-88d3f24ddc21" alt="RULER performance" loading="lazy" />
+      <div class="fig-caption"><span class="en">RULER accuracy across context lengths. UtK (red) leads across all settings.</span><span class="zh">不同上下文长度下 RULER 准确率；UtK（红色）在各设置下领先。</span></div>
+    </div>
+
+    <h3><span class="en">InfiniteBench — Instruct Models</span><span class="zh">InfiniteBench · 指令模型</span></h3>
+    <div class="table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>En.Avg.</th>
+            <th>En.Sum</th>
+            <th>En.QA</th>
+            <th>En.MC</th>
+            <th>En.Dia</th>
+            <th>Zh.QA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>GPT-4-Turbo-2024-04-09</td><td>33.2</td><td>17.6</td><td>19.3</td><td>77.7</td><td>18.0</td><td>–</td></tr>
+          <tr><td>Claude 2</td><td>34.0</td><td>14.5</td><td>12.0</td><td>62.9</td><td>46.5</td><td>9.6</td></tr>
+          <tr><td>Kimi-Chat</td><td>29.6</td><td>18.0</td><td>16.5</td><td>72.5</td><td>11.5</td><td>17.9</td></tr>
+          <tr><td>Yi-34B-200K</td><td>&lt;15.15</td><td>&lt;5</td><td>12.2</td><td>38.4</td><td>&lt;5</td><td>13.6</td></tr>
+          <tr><td>Qwen2-72B-Instruct</td><td>39.8</td><td>31.7</td><td>21.5</td><td>83.0</td><td>23.0</td><td>–</td></tr>
+          <tr><td>Llama-3-70B-Inst-Gradient-262k</td><td>32.6</td><td>14.3</td><td>29.5</td><td>69.0</td><td>17.5</td><td>–</td></tr>
+          <tr><td>Llama3.1-8B-Instruct</td><td>33.2</td><td>29.2</td><td>31.5</td><td>59.0</td><td>13.0</td><td>–</td></tr>
+          <tr><td>Llama3.1-70B-Instruct</td><td>39.8</td><td>30.9</td><td>38.5</td><td>75.6</td><td>14.3</td><td>–</td></tr>
+          <tr><td>Llama3-ChatQA-2-8B</td><td>35.6</td><td>17.1</td><td>43.5</td><td>64.2</td><td>17.5</td><td>–</td></tr>
+          <tr><td>Llama3-ChatQA-2-70B</td><td>41.0</td><td>16.1</td><td>48.2</td><td>80.4</td><td>19.5</td><td>–</td></tr>
+          <tr class="row-ours"><td><b>Qwen2-UtK-ChatQA2-7B-128K</b></td><td>33.3</td><td>21.2</td><td>42.6</td><td>61.1</td><td>8.5</td><td>37.6</td></tr>
+          <tr class="row-ours"><td><b>Qwen2-UtK-ChatQA2-72B-128K</b></td><td><b>47.3</b></td><td>18.2</td><td><b>55.9</b></td><td><b>83.8</b></td><td><b>31.0</b></td><td><b>45.2</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fig-caption"><span class="en">UtK-tuned 72B model achieves the best average score on InfiniteBench English tasks and leads significantly on Zh.QA.</span><span class="zh">UtK 训练的 72B 模型在 InfiniteBench 英文任务平均分最高，中文 QA 大幅领先。</span></div>
+  </div>
+</section>
+
+<section class="section" id="analysis">
+  <div class="container">
+    <h2><span class="en">Analysis</span><span class="zh">分析</span></h2>
+
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <div class="badge">20×</div>
+        <h3><span class="en">Training efficiency</span><span class="zh">训练效率</span></h3>
+        <p><span class="en">With only <b>1B tokens</b>, UtK-192K matches the baseline trained on <b>20B tokens</b> — a 20× data-efficiency win.</span><span class="zh">仅用 <b>10 亿 token</b>，UtK-192K 就达到了基线用 <b>200 亿 token</b> 的水平——数据效率 <b>20×</b>。</span></p>
+      </div>
+      <div class="analysis-card">
+        <div class="badge">±1.5%</div>
+        <h3><span class="en">No short-context regression</span><span class="zh">短文本性能无损</span></h3>
+        <p><span class="en">On BBH, HumanEval, GSM8K and more, UtK models stay within ±1.5% of baselines. Long gains come <b>for free</b>.</span><span class="zh">在 BBH、HumanEval、GSM8K 等基准上，UtK 与基线相差不超过 ±1.5%。长文本能力 <b>"免费"</b> 获得。</span></p>
+      </div>
+      <div class="analysis-card">
+        <div class="badge">2–3</div>
+        <h3><span class="en">Optimal chunk count</span><span class="zh">最优区块数</span></h3>
+        <p><span class="en">Performance peaks at 2–3 chunks per document. More chunks make the task too hard to learn.</span><span class="zh">每篇文档切为 2–3 块时性能最佳；过多区块会让任务过于困难，反而阻碍学习。</span></p>
+      </div>
+      <div class="analysis-card">
+        <div class="badge">✱</div>
+        <h3><span class="en">Backtracing is critical</span><span class="zh">回溯任务至关重要</span></h3>
+        <p><span class="en">Ablating the backtrace objective causes a large drop — it's the lever that forces global structure learning.</span><span class="zh">去掉回溯任务会带来显著下降——它正是强制模型学习全局结构的关键杠杆。</span></p>
+      </div>
+      <div class="analysis-card">
+        <div class="badge">↗</div>
+        <h3><span class="en">Scales across models</span><span class="zh">跨模型可扩展</span></h3>
+        <p><span class="en">UtK improves Qwen2-7B, Qwen2-72B, Llama3.1-8B alike — a general recipe, not a model-specific trick.</span><span class="zh">UtK 对 Qwen2-7B、Qwen2-72B、Llama3.1-8B 均有效——是通用训练策略，不是对特定模型的"调参"。</span></p>
+      </div>
+      <div class="analysis-card">
+        <div class="badge">👁</div>
+        <h3><span class="en">Interpretable attention</span><span class="zh">可解释的注意力</span></h3>
+        <p><span class="en">Attention maps reveal the model precisely connecting non-adjacent chunks of the same document across long distractors — literally "untying" the knots.</span><span class="zh">注意力图显示模型能精确把当前位置的注意力，跨过大量无关内容，聚焦到前文同文档的非相邻区块——字面意义上在"解结"。</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="resources">
+  <div class="container">
+    <h2><span class="en">Resources</span><span class="zh">资源下载</span></h2>
+    <div class="resource-grid">
+      <a class="resource-card" href="assets/pdfs/poster.pdf" target="_blank" rel="noopener">
+        <div class="resource-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="resource-body">
+          <div class="resource-title"><span class="en">Poster</span><span class="zh">海报</span></div>
+          <div class="resource-desc"><span class="en">ACL 2025 poster — PDF</span><span class="zh">ACL 2025 海报 · PDF</span></div>
+        </div>
+        <div class="resource-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+      <a class="resource-card" href="assets/pdfs/slides.pdf" target="_blank" rel="noopener">
+        <div class="resource-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="resource-body">
+          <div class="resource-title"><span class="en">Slides</span><span class="zh">演讲幻灯片</span></div>
+          <div class="resource-desc"><span class="en">ACL 2025 oral presentation — PDF</span><span class="zh">ACL 2025 口头报告 · PDF</span></div>
+        </div>
+        <div class="resource-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="models">
+  <div class="container">
+    <h2><span class="en">Open-Source Models</span><span class="zh">开源模型</span></h2>
+    <p>
+      <span class="en">We release four checkpoints on Hugging Face for research use:</span>
+      <span class="zh">我们在 Hugging Face 开源了四个训练好的模型供研究使用：</span>
+    </p>
+    <div class="model-grid">
+      <a class="model-card" href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">
+        <div class="model-name">Qwen2-UtK-7B-128K</div>
+        <div class="model-desc"><span class="en">Base model, RoPE θ = 5M</span><span class="zh">基座模型，RoPE θ=5M</span></div>
+      </a>
+      <a class="model-card" href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">
+        <div class="model-name">Qwen2-UtK-ChatQA2-7B-128K</div>
+        <div class="model-desc"><span class="en">Instruct, long SFT from ChatQA 2.0</span><span class="zh">指令模型，ChatQA 2.0 长文本 SFT</span></div>
+      </a>
+      <a class="model-card" href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">
+        <div class="model-name">Qwen2-UtK-72B-128K</div>
+        <div class="model-desc"><span class="en">72B base, 84.5% RULER@128K</span><span class="zh">72B 基座，RULER@128K 达 84.5%</span></div>
+      </a>
+      <a class="model-card" href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">
+        <div class="model-name">Qwen2-UtK-ChatQA2-72B-128K</div>
+        <div class="model-desc"><span class="en">72B instruct, best on InfiniteBench</span><span class="zh">72B 指令模型，InfiniteBench 最佳</span></div>
+      </a>
+    </div>
+
+    <h3 class="code-title"><span class="en">Quick Deploy (vLLM)</span><span class="zh">快速部署 (vLLM)</span></h3>
+<pre class="code-block"><code>pip install "vllm&gt;=0.4.3"
+
+python -m vllm.entrypoints.openai.api_server \
+    --served-model-name Qwen2-UtK-ChatQA2-7B-128K \
+    --model path/to/weights \
+    --trust-remote-code \
+    --tensor-parallel-size 2 \
+    --host 0.0.0.0 \
+    --enable_chunked_prefill \
+    --max_num_batched_tokens 32768</code></pre>
+  </div>
+</section>
+
+<section class="section" id="citation">
+  <div class="container narrow">
+    <h2><span class="en">Citation</span><span class="zh">引用</span></h2>
+    <p><span class="en">If you find UtK useful, please cite:</span><span class="zh">如果本工作对你有帮助，请引用：</span></p>
+    <div class="bibtex-wrap">
+      <button id="copy-bib" class="btn btn-copy">
+        <span class="en">Copy</span><span class="zh">复制</span>
+      </button>
+<pre class="code-block" id="bibtex"><code>@inproceedings{tian2025utk,
+  title     = {Untie the Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models},
+  author    = {Tian, Junfeng and Zheng, Da and Chen, Yang and Wang, Rui and Zhang, Colin and Zhang, Debing},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year      = {2025},
+  url       = {https://arxiv.org/abs/2409.04774}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>
+      <span class="en">© 2025 Untie the Knots authors. Website template inspired by academic project pages.</span>
+      <span class="zh">© 2025 Untie the Knots 作者团队。页面设计参考学术项目主页范式。</span>
+    </p>
+    <p class="footer-links">
+      <a href="https://arxiv.org/pdf/2409.04774" target="_blank" rel="noopener">arXiv</a> ·
+      <a href="https://github.com/rgtjf/Untie-the-Knots" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281" target="_blank" rel="noopener">Hugging Face</a>
+    </p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,11 +1,15 @@
 # Untie-the-Knots: An Efficient Data Augmentation Strategy for Long-Context Pre-Training in Language Models
 
 <div align="center">
+    <a href="https://rgtjf.github.io/Untie-the-Knots/">🌐 Project Page</a>
+    &nbsp&nbsp | &nbsp&nbsp
     <a href="https://huggingface.co/collections/rgtjf/utk-66daf994ccff050369720281">🤗 Hugging Face</a>
     &nbsp&nbsp | &nbsp&nbsp
     <a href="https://arxiv.org/pdf/2409.04774">📑 Paper</a>
     &nbsp&nbsp | &nbsp&nbsp
-    <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/rgtjf/Untie-the-Knots&count_bg=#E97EBA&title_bg=#555555&icon=&icon_color=#E7E7E7&title=visitors&edge_flat=false" alt="Hits"></a>
+    <a href="assets/pdfs/poster.pdf">🖼 Poster</a>
+    &nbsp&nbsp | &nbsp&nbsp
+    <a href="assets/pdfs/slides.pdf">📊 Slides</a>
 </div>
 
 ## Introduction
